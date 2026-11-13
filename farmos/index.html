@@ -752,6 +752,27 @@ function hitTest(x,y){
   return null;
 }
 
+/* ============ status langsung daripada Hermes (Supabase) ============ */
+// Isi dua nilai ini selepas projek Supabase siap. Kosong = mod luar talian.
+const LIVE={url:'',key:''};
+const SMAP={santai:'idle',bekerja:'working',siap:'happy',amaran:'alert'};
+let liveSeen=null;
+async function liveSync(){
+  if(!LIVE.url||!LIVE.key) return;
+  try{
+    const r=await fetch(LIVE.url+'/rest/v1/halim_status?id=eq.1&select=status,message,updated_at',{headers:{apikey:LIVE.key,Authorization:'Bearer '+LIVE.key}});
+    if(!r.ok) throw new Error(r.status);
+    const d=(await r.json())[0]; if(!d) return;
+    $('#chip').dataset.live='1';
+    if(d.updated_at!==liveSeen){
+      const first=liveSeen===null; liveSeen=d.updated_at;
+      const m=SMAP[d.status]||'idle';
+      if(!(first&&m==='idle')){ setMood(m); if(d.message) setTimeout(()=>Halim.say(d.message,5000,m==='alert'?'alert':''),700); logLine('Hermes: '+d.status+(d.message?' - '+d.message:'')); }
+    }
+  }catch(e){}
+}
+setInterval(liveSync,3000); liveSync();
+
 /* ============ init ============ */
 renderRoster(); bindInputs(); renderTasks(); renderLog(); drawMsgs();
 refresh();

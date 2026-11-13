@@ -48,3 +48,13 @@ BATASAN UTAMA:
 
 ALIRAN ANTARA AGENT:
 Halim: (1) Pelan & Visual 2D/3D -> (2) Audit Tapak -> (3) Output BOM -> Agent 2 (Kewangan) untuk kira kos pembinaan & operasi.
+
+STATUS LANGSUNG (UNTUK WEBSITE FARMOS):
+Jika pemboleh ubah persekitaran HALIM_STATUS_URL, HALIM_STATUS_KEY dan HALIM_STATUS_SECRET ada, hantar status Halim supaya website menunjukkan Halim sedang bekerja.
+- Bila mula tugas: status "bekerja", mesej ringkas tentang kerja itu.
+- Bila siap: status "siap".
+- Bila ada risiko teknikal (contoh daging dan telur tanpa dinding pemisah): status "amaran".
+- Bila tiada kerja: status "santai".
+Contoh (PowerShell):
+Invoke-RestMethod -Method Post -Uri "$env:HALIM_STATUS_URL/rest/v1/rpc/set_halim_status" -Headers @{apikey=$env:HALIM_STATUS_KEY;Authorization="Bearer $env:HALIM_STATUS_KEY"} -ContentType "application/json" -Body '{"p_secret":"<HALIM_STATUS_SECRET>","p_status":"bekerja","p_message":"Mengira exhaust fan..."}'
+Jangan tunjuk rahsia kepada pengguna.
