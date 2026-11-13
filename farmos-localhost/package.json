@@ -1,0 +1,36 @@
+{
+  "name": "farmos-localhost",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FarmOS Localhost: pejabat maya piksel 16-bit dan pusat kawalan reban ayam (Halim).",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c yellow,cyan \"npm:api\" \"npm:web\"",
+    "api": "node --disable-warning=ExperimentalWarning server/index.js",
+    "web": "vite",
+    "build": "vite build",
+    "start": "npm run build && npm run api",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-timeout=20000 server/app.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
+    "express": "^5.3.0",
+    "multer": "^2.5.0"
+  },
+  "devDependencies": {
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^10.0.7",
+    "lucide-react": "^1.72.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8"
+  }
+}
