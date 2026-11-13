@@ -43,8 +43,9 @@ export function drawBackground(g) {
   const rx = 176, ry = 216, rw = 128, rh = 48;
   R(g, rx - 1, ry - 1, rw + 2, rh + 2, '#6e5a2e');
   for (let j = 0; j < rh / 4; j++) for (let i = 0; i < rw / 4; i++) {
-    const d = Math.abs((i % 8) - 4) + Math.abs((j % 6) - 3);
-    const c = d === 0 || d === 4 ? '#2f8f6b' : d === 2 ? '#8f3b46' : (i + j) % 2 ? '#d8bf7a' : '#c9ad66';
+    const d = Math.abs((i % 16) - 8) + Math.abs(j - 6) * 1.34;
+    const band = Math.round(d) % 6;
+    const c = j < 1 || j > 10 ? '#8f3b46' : band === 0 ? '#2f8f6b' : band === 3 ? '#8f3b46' : (i + j) % 2 ? '#d8bf7a' : '#cdb26c';
     R(g, rx + i * 4, ry + j * 4, 4, 4, c);
     R(g, rx + i * 4, ry + j * 4 + 3, 4, 1, shade(c, 0.86));
     R(g, rx + i * 4 + 3, ry + j * 4, 1, 4, shade(c, 0.92));
@@ -218,9 +219,9 @@ export function drawClock(g, date) {
 
 // Papan putih: rajah mini reban ikut data projek semasa.
 export function drawWhiteboard(g, t, c) {
-  text(g, 'PELAN REBAN', 112, 11, '#2f62b0');
+  text(g, c ? `REBAN ${Math.round(c.s.L)}X${Math.round(c.s.W)}M` : 'PELAN REBAN', 118, 11, '#2f62b0');
   if (c) {
-    const s = c.s, bx = 112, by = 19, mw = 50, mh = 27;
+    const s = c.s, bx = 119, by = 19, mw = 44, mh = 28;
     const k = Math.min(mw / s.L, mh / s.W);
     const w = Math.max(10, Math.round(s.L * k)), h = Math.max(8, Math.round(s.W * k));
     const x = bx + Math.round((mw - w) / 2), y = by + Math.round((mh - h) / 2);
@@ -242,7 +243,6 @@ export function drawWhiteboard(g, t, c) {
       R(g, x + w - 4, ay - 1, 1, 3, '#2f8f6b'); R(g, x + w - 3, ay, 1, 1, '#2f8f6b');
     }
     if (bad && Math.floor(t * 2) % 2) { disc(g, x + Math.round(w / 2), y + Math.round(h / 2), 4, '#d9463a'); R(g, x + Math.round(w / 2), y + Math.round(h / 2) - 2, 1, 3, '#ffffff'); R(g, x + Math.round(w / 2), y + Math.round(h / 2) + 2, 1, 1, '#ffffff'); }
-    text(g, `${Math.round(s.L)}X${Math.round(s.W)}M`, 112, 47 - 0, '#56616c');
   }
   // nota lekat dan carta kecil
   R(g, 168, 12, 12, 12, '#ffd84a'); R(g, 168, 23, 12, 1, '#d9b530'); R(g, 170, 15, 8, 1, '#8a6d00'); R(g, 170, 18, 6, 1, '#8a6d00'); R(g, 170, 21, 7, 1, '#8a6d00');
@@ -292,7 +292,7 @@ export function drawPlotter(g, t, working) {
 
 export function drawMonstera(g, t) {
   R(g, 97, 79, 14, 1, 'rgba(0,0,0,.3)');
-  const leaves = [[95, 54, 6, 0], [111, 49, 7, 1.3], [103, 40, 6, 2.1], [114, 62, 5, 0.6], [92, 64, 5, 2.8]];
+  const leaves = [[95, 55, 6, 0], [108, 51, 6, 1.3], [101, 42, 6, 2.1], [110, 63, 4, 0.6], [92, 65, 5, 2.8]];
   leaves.forEach(([x, y, , ph]) => line(g, 104, 70, x + Math.round(Math.sin(t * 0.9 + ph) * 0.8), y + 3, '#2a6a3d'));
   leaves.forEach(([x, y, r, ph]) => {
     const lx = x + Math.round(Math.sin(t * 0.9 + ph) * 0.9);
@@ -376,7 +376,7 @@ export function drawWingDesk(g, t, st, agent, active) {
     R(g, x + 30, y + 9, 10, 5, '#f6f1e2'); R(g, x + 31, y + 10, 6, 1, '#9aa1a7'); R(g, x + 31, y + 12, 5, 1, '#9aa1a7');
   } else {
     // monitor bertutup kain habuk
-    const cx = x + 14, cy = y - 12;
+    const cx = x + 3, cy = y - 12;
     R(g, cx, cy + 2, 20, 22, '#d9cfb8'); R(g, cx + 1, cy, 18, 2, '#e6dcc6'); R(g, cx - 1, cy + 6, 1, 17, '#c9bfa6'); R(g, cx + 20, cy + 5, 1, 18, '#b8ae95');
     R(g, cx + 4, cy + 3, 1, 20, '#c9bfa6'); R(g, cx + 10, cy + 2, 1, 21, '#e6dcc6'); R(g, cx + 15, cy + 4, 1, 19, '#c9bfa6');
     R(g, cx - 1, cy + 23, 22, 1, '#b8ae95'); R(g, cx + 2, cy + 24, 3, 1, '#d9cfb8'); R(g, cx + 12, cy + 24, 4, 1, '#d9cfb8');
@@ -391,6 +391,14 @@ export function drawPlate(g, cx, y, label, active, t) {
   R(g, x - 1, y - 1, w + 2, 11, '#14181c'); R(g, x, y, w, 9, '#262d35'); R(g, x, y, w, 1, '#3b4650');
   text(g, label, x + 4, y + 2, active ? '#3fe08f' : '#f5c518');
   R(g, x + 1, y + 7, 1, 1, active ? '#3fe08f' : Math.floor(t * 2) % 2 ? '#ff5b4a' : '#5a1f1a');
+}
+
+export function drawBreakTable(g) {
+  R(g, 62, 143, 20, 1, 'rgba(0,0,0,.25)');
+  [50, 86].forEach((x) => { R(g, x, 141, 8, 1, 'rgba(0,0,0,.25)'); R(g, x + 3, 134, 2, 7, '#5a6570'); R(g, x, 130, 8, 4, '#d9463a'); R(g, x, 130, 8, 1, '#f07a6a'); R(g, x, 133, 8, 1, '#a6332a'); });
+  R(g, 71, 132, 2, 11, '#5a6570'); R(g, 67, 142, 10, 1, '#3d4852');
+  R(g, 62, 124, 20, 9, '#c9a06a'); R(g, 62, 124, 20, 1, '#e3bd85'); R(g, 62, 132, 20, 1, '#8b643c'); R(g, 61, 126, 1, 5, '#c9a06a'); R(g, 82, 126, 1, 5, '#a57a46');
+  R(g, 65, 126, 6, 3, '#ffffff'); R(g, 66, 126, 2, 2, '#e58fb0'); R(g, 68, 127, 2, 1, '#7fc97a'); R(g, 75, 126, 3, 4, '#f4efe6'); R(g, 75, 126, 3, 1, '#4a2c17');
 }
 
 export function drawMaquette(g) {

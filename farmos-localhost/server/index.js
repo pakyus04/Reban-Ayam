@@ -1,5 +1,6 @@
 // Titik mula pelayan FarmOS. Jalankan: npm run dev  (atau: npm run api)
 import path from 'node:path';
+import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const [major, minor] = process.versions.node.split('.').map(Number);
@@ -21,6 +22,7 @@ const { app } = createApp({ dataDir: path.join(root, 'data'), distDir: path.join
 const server = app.listen(port, host, () => {
   const m = llmMode();
   console.log(`\n  FarmOS API   http://localhost:${port}`);
+  if (fs.existsSync(path.join(root, 'dist', 'index.html'))) console.log(`  Laman (binaan terakhir)  http://localhost:${port}`);
   console.log(`  Pangkalan data  data/farmos.db`);
   console.log(`  Otak Halim   ${m.provider === 'offline' ? 'enjin tempatan (luar talian, tiada kunci API)' : `${m.provider} (${m.model})`}\n`);
 });

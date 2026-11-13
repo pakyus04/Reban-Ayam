@@ -28,6 +28,7 @@ export function buildBlocked() {
   set(26, 8, 28, 8);            // meja slot 02
   set(26, 14, 28, 14);          // meja slot 03
   set(3, 13, 5, 14);            // meja model reban
+  set(3, 8, 5, 8);              // meja rehat pantri + dua bangku
   return b;
 }
 
